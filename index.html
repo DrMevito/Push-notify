@@ -2,6 +2,18 @@
 <html>
 <head>
   <title>FCM Demo</title>
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "f834053a-9f37-4e4b-861d-814c1e75efbb",
+    });
+  });
+</script>
+
+  
 </head>
 <body>
   <h1>Push Notification Test</h1>
