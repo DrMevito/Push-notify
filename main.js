@@ -1,7 +1,8 @@
-// Import modules (no need to use script tags for this if you're using Cloudflare Pages)
+// Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js";
 
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCdNeq3qKvQ1Odjy94wJ1CNtXM00siLUK0",
   authDomain: "mevito-2003.firebaseapp.com",
@@ -12,25 +13,31 @@ const firebaseConfig = {
   measurementId: "G-SH3YG65TCJ"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Messaging
 const messaging = getMessaging(app);
 
+// VAPID key (yours)
+const vapidKey = "BFdM17MrTixtwua7ySCOuMjc9pkIEQ0E2CXoYDgE8bewlTF1uV2hiLzEhJRlPsv9oWuJMuZduoOGnwsos4Re6QQ";
+
 // Request permission and get token
-Notification.requestPermission().then((permission) => {
-  if (permission === 'granted') {
-    getToken(messaging, {
-      vapidKey: "BFdM17MrTixtwua7ySCOuMjc9pkIEQ0E2CXoYDgE8bewlTF1uV2hiLzEhJRlPsv9oWuJMuZduoOGnwsos4Re6QQ"
-    }).then((currentToken) => {
-      if (currentToken) {
-        console.log("FCM Token:", currentToken);
-        // You can send this token to PocketBase or save it
-      } else {
-        console.log("No registration token available.");
-      }
-    }).catch((err) => {
-      console.error("An error occurred while retrieving token.", err);
-    });
-  } else {
-    console.log("Permission not granted.");
-  }
+getToken(messaging, { vapidKey })
+  .then((currentToken) => {
+    if (currentToken) {
+      console.log("FCM Token:", currentToken);
+      alert("FCM Token: " + currentToken);
+    } else {
+      console.warn("No registration token available. Request permission to generate one.");
+    }
+  })
+  .catch((err) => {
+    console.error("An error occurred while retrieving token.", err);
+  });
+
+// Listen for foreground messages
+onMessage(messaging, (payload) => {
+  console.log("Message received in foreground:", payload);
+  alert("Notification: " + payload.notification.title);
 });
